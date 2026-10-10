@@ -46,7 +46,8 @@ def load_data():
                  "https://data.4tu.nl/datasets/80ef3824-3f5d-4e45-8794-3b8791efbd13 "
                  "and place the CSV next to app.py.")
         st.stop()
-    df = pd.read_csv(csv_path, sep=None, engine='python', encoding='utf-8-sig')    df.columns = [str(c).strip().replace('\ufeff', '') for c in df.columns]
+    df = pd.read_csv(csv_path, sep=None, engine='python', encoding='utf-8-sig')
+    df.columns = [str(c).strip().replace('\ufeff', '') for c in df.columns]
 
     required = ['EV_id_x', 'start_datetime', 'end_datetime', 'total_energy', 'evse_uid']
     missing = [c for c in required if c not in df.columns]
