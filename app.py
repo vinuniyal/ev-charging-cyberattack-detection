@@ -40,15 +40,19 @@ button[data-baseweb="tab"] { font-size: 1rem; font-weight: 600; }
 # ---------------- Data ----------------
 @st.cache_data
 def load_data():
-    df = pd.read_csv(BASE / '202410DatasetEVOfficeParking_v0.csv',
-                     sep=None, engine='python', encoding='utf-8-sig')
-    df.columns = [str(c).strip().replace('\ufeff', '') for c in df.columns]
+    csv_path = BASE / '202410DatasetEVOfficeParking_v0.csv'
+    if not csv_path.exists():
+        st.error("Dataset not found. Download it from "
+                 "https://data.4tu.nl/datasets/80ef3824-3f5d-4e45-8794-3b8791efbd13 "
+                 "and place the CSV next to app.py.")
+        st.stop()
+    df = pd.read_csv(csv_path, sep=None, engine='python', encoding='utf-8-sig')    df.columns = [str(c).strip().replace('\ufeff', '') for c in df.columns]
 
     required = ['EV_id_x', 'start_datetime', 'end_datetime', 'total_energy', 'evse_uid']
     missing = [c for c in required if c not in df.columns]
     if missing:
-        st.error(f"Ye columns file mein nahi mile: {missing}")
-        st.write("File ke actual columns:", df.columns.tolist())
+        st.error(f"Missing columns in the dataset file: {missing}")
+        st.write("Columns found in the file:", df.columns.tolist())
         st.stop()
 
     df['start_datetime'] = pd.to_datetime(df['start_datetime'], dayfirst=True)
